@@ -1,113 +1,187 @@
-# Desafio Tetris Stack - Controle de Peças com Estruturas de Dados
+# 🎮 Tetris Stack — Sistema de Fila de Peças (Nível Novato)
 
-Bem-vindo ao desafio **"Tetris Stack"**! Neste jogo inspirado nas mecânicas clássicas de montagem de peças, o jogador deve organizar, reservar e manipular peças em tempo real. Para isso, você, como programador, será responsável por implementar as estruturas de controle que regem a lógica das peças.
+## 📋 Visão Geral
 
-A empresa **ByteBros**, especializada em jogos educacionais de lógica e programação, contratou você para desenvolver o sistema de gerenciamento de peças, utilizando estruturas como **fila circular** e **pilha**.
+Este projeto implementa, em **C**, uma simulação completa e funcional da **fila de peças futuras** do jogo educativo **Tetris Stack**. A solução utiliza uma estrutura de **fila circular** para gerenciar peças de forma eficiente, oferecendo ao jogador interatividade total através de um menu intuitivo.
 
-O desafio está dividido em três níveis: **Novato**, **Aventureiro** e **Mestre**, com cada nível adicionando mais complexidade ao anterior.  
-**Você deve escolher qual desafio deseja realizar.**
+### 🎯 Objetivo
 
-🚨 **Atenção:** O nível Novato foca apenas na fila de peças, usando conceitos básicos de structs, arrays e modularização.
+Simular o comportamento de uma fila de peças em um jogo tipo Tetris, aplicando conceitos fundamentais de estruturas de dados em um contexto prático e educativo.
 
-## 🎮 Nível Novato: Fila de Peças Futuras
+## ✨ Funcionalidades Principais
 
-No nível Novato, você criará o sistema inicial de controle das peças futuras do jogo Tetris Stack. As peças possuem um **nome** (representando o tipo, como 'I', 'O', 'T', 'L') e um **id** exclusivo (identificador numérico).
+O programa oferece três operações fundamentais:
 
-🚩 **Objetivo:** Criar um programa em C que simula uma **fila circular** de 5 peças com as seguintes funcionalidades:
+| Operação         | Código | Descrição                                           |
+| ---------------- | ------ | --------------------------------------------------- |
+| **Jogar Peça**   | `1`    | Remove a peça do início da fila (_dequeue_)         |
+| **Inserir Peça** | `2`    | Adiciona uma nova peça ao final da fila (_enqueue_) |
+| **Sair**         | `0`    | Encerra o programa                                  |
 
-*   Visualizar a fila atual
-*   Jogar (remover) a peça da frente
-*   Inserir automaticamente uma nova peça no final da fila
+### 📦 Estrutura das Peças
 
-⚙️ **Funcionalidades do Sistema:**
+Cada peça possui:
 
-*   Inicializar a fila com 5 peças geradas automaticamente.
-*   Permitir que o usuário:
-    *   Jogue uma peça (dequeue)
-    *   Insira uma nova peça (enqueue)
-    *   Visualize o estado atual da fila
-*   Manter a fila circular, reaproveitando o espaço.
+- **`nome`**: caractere indicando o tipo (`I`, `O`, `T` ou `L`)
+- **`id`**: número inteiro único e sequencial
 
-📥 **Entrada** e 📤 **Saída de Dados:**
+Exemplo: `[T 0]` = Peça tipo T com ID 0
 
-*   O programa utiliza menus via terminal.
-*   A cada ação, o estado atualizado da fila é exibido com `printf`.
+## 🏗️ Arquitetura do Código
 
-**Simplificações para o Nível Novato:**
+### Estruturas de Dados
 
-*   Trabalhe **apenas com a fila**.
-*   A fila deve conter **exatamente 5 elementos**.
-*   Use uma função `gerarPeca()` para criar automaticamente novas peças.
-*   Utilize structs e arrays. Não implemente pilha.
+```c
+// Representa uma peça individual
+typedef struct {
+    char nome;  // Tipo: I, O, T, L
+    int id;     // Identificador único
+} Peca;
 
-## 🛡️ Nível Aventureiro: Reserva de Peças com Pilha
+// Fila circular com capacidade fixa
+typedef struct {
+    Peca itens[MAX];  // Array de peças (MAX = 5)
+    int inicio;       // Índice do primeiro elemento
+    int fim;          // Índice do próximo espaço livre
+    int total;        // Quantidade de peças
+} Fila;
+```
 
-No nível Aventureiro, você irá expandir o sistema com uma **pilha de reserva de peças**, que permite ao jogador guardar peças para uso posterior.
+### Funções Principais
 
-🆕 **Diferença em relação ao Nível Novato:**
+| Função              | Propósito                                            |
+| ------------------- | ---------------------------------------------------- |
+| `gerarPeca()`       | Gera automaticamente uma peça aleatória com ID único |
+| `inicializarFila()` | Inicializa uma fila vazia                            |
+| `filaCheia()`       | Verifica se atingiu capacidade máxima                |
+| `filaVazia()`       | Verifica se está vazia                               |
+| `enfileirar()`      | Insere peça no final (_enqueue_)                     |
+| `desenfileirar()`   | Remove peça do início (_dequeue_)                    |
+| `mostrarFila()`     | Exibe o estado atual da fila                         |
+| `mostrarMenu()`     | Exibe menu de opções                                 |
 
-*   Introdução da **pilha linear** para reservar peças.
-*   A fila permanece sempre cheia com 5 peças.
+## 📋 Requisitos Atendidos
 
-⚙️ **Funcionalidades do Sistema:**
+### ✅ Requisitos Funcionais
 
-*   Além das opções anteriores, o usuário pode:
-    *   Reservar a peça da frente da fila (push)
-    *   Usar uma peça reservada (pop)
-*   A fila continua funcionando com inserção automática.
-*   A pilha tem **capacidade máxima de 3 peças**.
+- [x] Inicialização automática da fila com **5 peças**
+- [x] Operação de **dequeue** com validação
+- [x] Operação de **enqueue** com validação
+- [x] Exibição clara do estado após cada ação
+- [x] Menu interativo com 3 opções
 
-📥 **Entrada** e 📤 **Saída de Dados:**
+### ✅ Requisitos Não-Funcionais
 
-*   Menu com 4 opções:
-    * `1` - Jogar peça
-    * `2` - Reservar peça
-    * `3` - Usar peça reservada
-    * `0` - Sair
-*   O estado da fila e da pilha é exibido após cada ação.
+- [x] **Usabilidade**: Saída clara e intuitiva
+- [x] **Legibilidade**: Código bem organizado com nomes descritivos
+- [x] **Documentação**: Comentários explicando cada função e lógica
 
-**Simplificações para o Nível Intermediário:**
+## 📸 Exemplo de Saída
 
-*   A pilha não permite escolha da posição.
-*   O jogador **não escolhe o tipo da peça** — todas são geradas automaticamente.
-*   Não há comparação nem troca direta entre as estruturas.
+```
+Fila de Pecas: [T 0] [O 1] [L 2] [I 3] [I 4]
 
-## 🏆 Nível Mestre: Integração Total com Estratégia
+1 - Jogar Peca (dequeue)
+2 - Inserir Nova Peca (enqueue)
+0 - Sair
+Escolha: 1
+Peca jogada: [T 0]
 
-No nível Mestre, você implementará uma **integração complexa** entre a fila e a pilha, simulando funcionalidades avançadas como **troca**, **desfazer** e **inversão de peças**.
+Fila de Pecas: [O 1] [L 2] [I 3] [I 4]
 
-🆕 **Diferença em relação ao Nível Aventureiro:**
+1 - Jogar Peca (dequeue)
+2 - Inserir Nova Peca (enqueue)
+0 - Sair
+Escolha: 2
+Nova peca inserida.
 
-*   Operações mais complexas e estratégicas entre as estruturas.
-*   Manipulação reversível do estado das peças.
+Fila de Pecas: [O 1] [L 2] [I 3] [I 4] [T 5]
+```
 
-⚙️ **Funcionalidades do Sistema:**
+## 🛠️ Como Compilar
 
-*   Menu com múltiplas ações:
-    * `1` - Jogar peça
-    * `2` - Reservar peça
-    * `3` - Usar peça reservada
-    * `4` - Trocar peça do topo da pilha com a da frente da fila
-    * `5` - Desfazer última jogada
-    * `6` - Inverter fila com pilha
-    * `0` - Sair
-*   Controle de fila circular e pilha de reserva com atualização a cada ação.
+### Requisitos
 
-📥 **Entrada** e 📤 **Saída de Dados:**
+- Compilador C (GCC recomendado)
+- Windows, Linux ou macOS
 
-*   Mesmo estilo dos níveis anteriores.
-*   Agora exige controle total do fluxo e da memória entre as estruturas.
+### Windows (CMD ou PowerShell)
 
-**Observações:**
+```bash
+gcc -g desafioNovato.c -o desafioNovato.exe
+```
 
-*   Cada operação deve ser segura e manter a integridade dos dados.
-*   A complexidade exige modularização clara e funções bem separadas.
+### Linux/macOS (Terminal)
 
-## 🏁 Conclusão
+```bash
+gcc -g desafioNovato.c -o desafioNovato
+```
 
-Ao concluir qualquer um dos níveis, você terá exercitado conceitos fundamentais de estrutura de dados, como **fila circular** e **pilha**, em um contexto prático de desenvolvimento de jogos.
+## ▶️ Como Executar
 
-Boa sorte e divirta-se programando!
+### Windows
 
-Equipe de Ensino - ByteBros
+```bash
+.\desafioNovato.exe
+```
 
+### Linux/macOS
+
+```bash
+./desafioNovato
+```
+
+## 🔑 Conceitos Chave Implementados
+
+### Fila Circular
+
+A fila utiliza **índices circulares** para reutilizar espaço eficientemente:
+
+- Quando `fim` atinge `MAX`, volta a 0
+- Usa operação módulo: `(índice + 1) % MAX`
+
+### Operações Fundamental
+
+- **Enqueue**: Adiciona ao `fim` e avança circularmente
+- **Dequeue**: Remove do `inicio` e avança circularmente
+- **Validação**: Verifica `total == MAX` (cheia) e `total == 0` (vazia)
+
+### Geração Automática de Peças
+
+- Função `gerarPeca()` cria peças aleatórias
+- Cada peça recebe um ID sequencial único
+- Usa `srand()` com `time()` para aleatoriedade
+
+## 📊 Fluxo de Execução
+
+```
+1. Inicializa a fila
+2. Popula com 5 peças aleatórias
+3. Loop interativo:
+   ├─ Exibe fila
+   ├─ Exibe menu
+   ├─ Lê escolha do usuário
+   ├─ Executa operação
+   └─ Repete até sair (opção 0)
+```
+
+## ⚠️ Observações Importantes
+
+1. **Capacidade Fixa**: A fila tem capacidade máxima de 5 peças
+2. **Circularidade**: Espaço é reutilizado após remoção
+3. **IDs Sequenciais**: Cada peça tem um ID único incremental
+4. **Aleatoriedade**: Tipos de peças são aleatórios, mas IDs são ordenados
+5. **Validação Completa**: Todas as operações verificam limites
+
+## 🐛 Tratamento de Erros
+
+O programa valida:
+
+- **Fila Cheia**: Rejeita enqueue quando capacidade é atingida
+- **Fila Vazia**: Rejeita dequeue quando vazia
+- **Entrada Inválida**: Trata entradas não-numéricas
+- **Menu Inválido**: Rejeita opções fora de 0-2
+
+---
+
+📚 **Desenvolvido como prática de estruturas de dados em C**
