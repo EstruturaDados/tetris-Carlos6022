@@ -1,22 +1,23 @@
-# 🎮 Tetris Stack — Sistema de Fila de Peças (Nível Novato)
+# 🎮 Tetris Stack — Gerenciamento de Fila e Pilha de Peças (Nível Aventureiro)
 
 ## 📋 Visão Geral
 
-Este projeto implementa, em **C**, uma simulação completa e funcional da **fila de peças futuras** do jogo educativo **Tetris Stack**. A solução utiliza uma estrutura de **fila circular** para gerenciar peças de forma eficiente, oferecendo ao jogador interatividade total através de um menu intuitivo.
+Este projeto implementa, em **C**, uma simulação avançada do **gerenciamento de peças** no jogo educativo **Tetris Stack**. A solução combina duas estruturas de dados fundamentais: uma **fila circular** para as peças futuras e uma **pilha** para as peças reservadas, oferecendo ao jogador um sistema completo de gerenciamento estratégico de peças.
 
 ### 🎯 Objetivo
 
-Simular o comportamento de uma fila de peças em um jogo tipo Tetris, aplicando conceitos fundamentais de estruturas de dados em um contexto prático e educativo.
+Simular o comportamento realista do sistema de reserva de peças em um jogo tipo Tetris, aplicando conceitos avançados de estruturas de dados (fila + pilha) em um contexto prático e interativo.
 
 ## ✨ Funcionalidades Principais
 
-O programa oferece três operações fundamentais:
+O programa oferece quatro operações fundamentais:
 
-| Operação         | Código | Descrição                                           |
-| ---------------- | ------ | --------------------------------------------------- |
-| **Jogar Peça**   | `1`    | Remove a peça do início da fila (_dequeue_)         |
-| **Inserir Peça** | `2`    | Adiciona uma nova peça ao final da fila (_enqueue_) |
-| **Sair**         | `0`    | Encerra o programa                                  |
+| Operação                | Código | Descrição                                            |
+| ----------------------- | ------ | ---------------------------------------------------- |
+| **Jogar Peça**          | `1`    | Remove a peça do início da fila (_dequeue_)          |
+| **Reservar Peça**       | `2`    | Move a peça da fila para a pilha de reserva (_push_) |
+| **Usar Peça Reservada** | `3`    | Remove e usa a peça do topo da pilha (_pop_)         |
+| **Sair**                | `0`    | Encerra o programa                                   |
 
 ### 📦 Estrutura das Peças
 
@@ -25,163 +26,188 @@ Cada peça possui:
 - **`nome`**: caractere indicando o tipo (`I`, `O`, `T` ou `L`)
 - **`id`**: número inteiro único e sequencial
 
-Exemplo: `[T 0]` = Peça tipo T com ID 0
+Exemplo: `[T 7]` = Peça tipo T com ID 7
 
 ## 🏗️ Arquitetura do Código
 
 ### Estruturas de Dados
 
 ```c
-// Representa uma peça individual
+/**
+ * @brief Representa uma peça individual do jogo
+ */
 typedef struct {
-    char nome;  // Tipo: I, O, T, L
-    int id;     // Identificador único
+    char nome;  ///< Tipo: I, O, T, L
+    int id;     ///< Identificador único
 } Peca;
 
-// Fila circular com capacidade fixa
+/**
+ * @brief Fila circular para peças futuras
+ */
 typedef struct {
-    Peca itens[MAX];  // Array de peças (MAX = 5)
-    int inicio;       // Índice do primeiro elemento
-    int fim;          // Índice do próximo espaço livre
-    int total;        // Quantidade de peças
+    Peca itens[MAX_FILA];  ///< Array de peças (MAX_FILA = 5)
+    int inicio;            ///< Índice do primeiro elemento
+    int fim;               ///< Índice do próximo espaço livre
+    int total;             ///< Quantidade de peças na fila
 } Fila;
+
+/**
+ * @brief Pilha linear para peças reservadas
+ */
+typedef struct {
+    Peca itens[MAX_PILHA]; ///< Array de peças (MAX_PILHA = 3)
+    int topo;              ///< Índice do topo da pilha
+} Pilha;
 ```
 
 ### Funções Principais
 
-| Função              | Propósito                                            |
-| ------------------- | ---------------------------------------------------- |
-| `gerarPeca()`       | Gera automaticamente uma peça aleatória com ID único |
-| `inicializarFila()` | Inicializa uma fila vazia                            |
-| `filaCheia()`       | Verifica se atingiu capacidade máxima                |
-| `filaVazia()`       | Verifica se está vazia                               |
-| `enfileirar()`      | Insere peça no final (_enqueue_)                     |
-| `desenfileirar()`   | Remove peça do início (_dequeue_)                    |
-| `mostrarFila()`     | Exibe o estado atual da fila                         |
-| `mostrarMenu()`     | Exibe menu de opções                                 |
+#### Gerenciamento de Fila
 
-## 📋 Requisitos Atendidos
+- `void inicializarFila(Fila *f)` — Inicializa a fila vazia
+- `int filaCheia(Fila *f)` — Verifica se a fila está cheia
+- `int filaVazia(Fila *f)` — Verifica se a fila está vazia
+- `void enfileirar(Fila *f, Peca p)` — Adiciona peça ao final da fila
+- `int desenfileirar(Fila *f, Peca *p)` — Remove peça do início da fila
+- `void mostrarFila(Fila *f)` — Exibe o estado da fila
 
-### ✅ Requisitos Funcionais
+#### Gerenciamento de Pilha
 
-- [x] Inicialização automática da fila com **5 peças**
-- [x] Operação de **dequeue** com validação
-- [x] Operação de **enqueue** com validação
-- [x] Exibição clara do estado após cada ação
-- [x] Menu interativo com 3 opções
+- `void inicializarPilha(Pilha *p)` — Inicializa a pilha vazia
+- `int pilhaCheia(Pilha *p)` — Verifica se a pilha está cheia
+- `int pilhaVazia(Pilha *p)` — Verifica se a pilha está vazia
+- `int push(Pilha *p, Peca peca)` — Adiciona peça ao topo da pilha
+- `int pop(Pilha *p, Peca *peca)` — Remove peça do topo da pilha
+- `void mostrarPilha(Pilha *p)` — Exibe o estado da pilha
 
-### ✅ Requisitos Não-Funcionais
+#### Utilidades
 
-- [x] **Usabilidade**: Saída clara e intuitiva
-- [x] **Legibilidade**: Código bem organizado com nomes descritivos
-- [x] **Documentação**: Comentários explicando cada função e lógica
+- `Peca gerarPeca(void)` — Gera uma peça aleatória automaticamente
 
-## 📸 Exemplo de Saída
+## 🎯 Conceitos Aplicados
+
+### Fila Circular (FIFO)
+
+- Reaproveitamento eficiente de espaço no array
+- Operação circular usando `(indice + 1) % MAX_FILA`
+- Mantém sempre 5 peças na fila
+- A cada remoção, uma nova peça é gerada automaticamente
+
+### Pilha Linear (LIFO)
+
+- Capacidade limitada a 3 peças
+- Permite reservar peças para uso posterior
+- Acesso apenas pelo topo (última peça inserida)
+
+### Fluxo de Dados
 
 ```
+Fila → Jogar (dequeue)      → Peça usada
+Fila → Reservar (dequeue)   → Pilha (push)
+Pilha → Usar (pop)          → Peça usada
+```
+
+## 🚀 Como Usar
+
+### Compilação
+
+```bash
+gcc -g desafioAventureiro.c -o desafioAventureiro.exe
+```
+
+### Execução
+
+```bash
+./desafioAventureiro.exe
+```
+
+### Exemplo de Uso
+
+```
+===== TETRIS STACK - GERENCIAMENTO DE PECAS =====
+
 Fila de Pecas: [T 0] [O 1] [L 2] [I 3] [I 4]
+Pilha de Reserva (Topo -> Base): (vazia)
 
-1 - Jogar Peca (dequeue)
-2 - Inserir Nova Peca (enqueue)
+1 - Jogar Peca
+2 - Reservar Peca
+3 - Usar Peca Reservada
 0 - Sair
-Escolha: 1
-Peca jogada: [T 0]
 
-Fila de Pecas: [O 1] [L 2] [I 3] [I 4]
+Opcao: 2
 
-1 - Jogar Peca (dequeue)
-2 - Inserir Nova Peca (enqueue)
-0 - Sair
-Escolha: 2
-Nova peca inserida.
+===== RESERVANDO PECA =====
 
+Peca [T 0] foi movida para a pilha de reserva!
+
+Nova peca gerada automaticamente!
+
+Estado atual:
 Fila de Pecas: [O 1] [L 2] [I 3] [I 4] [T 5]
+Pilha de Reserva (Topo -> Base): [T 0]
+
+Pressione ENTER para continuar...
 ```
 
-## 🛠️ Como Compilar
+## 📊 Exemplo de Execução Completa
 
-### Requisitos
+1. **Estado Inicial**: Fila com 5 peças, pilha vazia
+2. **Reservar** (`2`): Move `[T 0]` da fila para a pilha → Nova peça gerada
+3. **Reservar** (`2`): Move `[O 1]` da fila para a pilha → Nova peça gerada
+4. **Reservar** (`2`): Move `[L 2]` da fila para a pilha → Nova peça gerada
+5. **Pilha cheia**: Tentativa de reservar é bloqueada
+6. **Usar reservada** (`3`): Remove `[L 2]` da pilha e usa
+7. **Jogar** (`1`): Remove e joga peça direto da fila
 
-- Compilador C (GCC recomendado)
-- Windows, Linux ou macOS
+## 🎓 Requisitos Cumpridos
 
-### Windows (CMD ou PowerShell)
+### Funcionais
 
-```bash
-gcc -g desafioNovato.c -o desafioNovato.exe
-```
+✅ Inicialização automática da fila com 5 peças  
+✅ Inicialização da pilha vazia com capacidade para 3 peças  
+✅ Operação de jogar peça (dequeue)  
+✅ Operação de reservar peça (move da fila para pilha)  
+✅ Operação de usar peça reservada (pop)  
+✅ Geração automática de novas peças  
+✅ Validações de fila/pilha cheia ou vazia  
+✅ Exibição clara do estado atual
 
-### Linux/macOS (Terminal)
+### Não Funcionais
 
-```bash
-gcc -g desafioNovato.c -o desafioNovato
-```
+✅ Interface clara e intuitiva  
+✅ Código bem documentado com comentários Doxygen  
+✅ Separação de responsabilidades  
+✅ Mensagens de erro descritivas  
+✅ Feedback visual imediato após cada ação  
+✅ Exibição automática do estado atualizado da fila e pilha após operações
 
-## ▶️ Como Executar
+## 🔧 Detalhes Técnicos
 
-### Windows
+### Capacidades
 
-```bash
-.\desafioNovato.exe
-```
+- **Fila**: 5 peças (fixo)
+- **Pilha**: 3 peças (fixo)
+- **Tipos de peças**: I, O, T, L (geradas aleatoriamente)
 
-### Linux/macOS
+### Comportamento
 
-```bash
-./desafioNovato
-```
+- Peças removidas da fila ou pilha não voltam ao jogo
+- A cada remoção da fila, uma nova peça é gerada automaticamente
+- Não é possível reservar quando a pilha está cheia
+- Não é possível usar reservada quando a pilha está vazia
 
-## 🔑 Conceitos Chave Implementados
+## 📝 Observações
 
-### Fila Circular
+- O programa limpa apenas o buffer de entrada para evitar comportamentos inesperados
+- IDs são sequenciais e únicos durante toda a execução
+- Gerador de números aleatórios é inicializado com o tempo atual
+- Estado da fila e pilha é exibido imediatamente após cada operação bem-sucedida
 
-A fila utiliza **índices circulares** para reutilizar espaço eficientemente:
+## 👨‍💻 Autor
 
-- Quando `fim` atinge `MAX`, volta a 0
-- Usa operação módulo: `(índice + 1) % MAX`
-
-### Operações Fundamental
-
-- **Enqueue**: Adiciona ao `fim` e avança circularmente
-- **Dequeue**: Remove do `inicio` e avança circularmente
-- **Validação**: Verifica `total == MAX` (cheia) e `total == 0` (vazia)
-
-### Geração Automática de Peças
-
-- Função `gerarPeca()` cria peças aleatórias
-- Cada peça recebe um ID sequencial único
-- Usa `srand()` com `time()` para aleatoriedade
-
-## 📊 Fluxo de Execução
-
-```
-1. Inicializa a fila
-2. Popula com 5 peças aleatórias
-3. Loop interativo:
-   ├─ Exibe fila
-   ├─ Exibe menu
-   ├─ Lê escolha do usuário
-   ├─ Executa operação
-   └─ Repete até sair (opção 0)
-```
-
-## ⚠️ Observações Importantes
-
-1. **Capacidade Fixa**: A fila tem capacidade máxima de 5 peças
-2. **Circularidade**: Espaço é reutilizado após remoção
-3. **IDs Sequenciais**: Cada peça tem um ID único incremental
-4. **Aleatoriedade**: Tipos de peças são aleatórios, mas IDs são ordenados
-5. **Validação Completa**: Todas as operações verificam limites
-
-## 🐛 Tratamento de Erros
-
-O programa valida:
-
-- **Fila Cheia**: Rejeita enqueue quando capacidade é atingida
-- **Fila Vazia**: Rejeita dequeue quando vazia
-- **Entrada Inválida**: Trata entradas não-numéricas
-- **Menu Inválido**: Rejeita opções fora de 0-2
+Desenvolvido como parte das atividades de Estrutura de Dados - Tema 3: Pilhas e Filas.
 
 ---
 
-📚 **Desenvolvido como prática de estruturas de dados em C**
+**Status**: ✅ Funcionando perfeitamente  
+**Última atualização**: 02/02/2026
