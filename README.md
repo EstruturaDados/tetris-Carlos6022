@@ -1,25 +1,25 @@
-# 🎮 Tetris Stack — Gerenciamento de Fila e Pilha de Peças (Nível Aventureiro)
+# 🎮 Tetris Stack — Gerenciamento de Fila e Pilha de Peças (Nível Mestre)
 
 ## 📋 Visão Geral
 
-Este projeto implementa, em **C**, uma simulação avançada do **gerenciamento de peças** no jogo educativo **Tetris Stack**. A solução combina duas estruturas de dados fundamentais: uma **fila circular** para as peças futuras e uma **pilha** para as peças reservadas, oferecendo ao jogador um sistema completo de gerenciamento estratégico de peças.
+Este projeto implementa, em **C**, a versão **Nível Mestre** do sistema de gerenciamento de peças do jogo educativo **Tetris Stack**. A solução combina duas estruturas de dados: uma **fila circular** para as peças futuras e uma **pilha** para as peças reservadas, além de operações avançadas de **troca entre fila e pilha**.
 
 ### 🎯 Objetivo
 
-Simular o comportamento realista do sistema de reserva de peças em um jogo tipo Tetris, aplicando conceitos avançados de estruturas de dados (fila + pilha) em um contexto prático e interativo.
+Aplicar conceitos avançados de estruturas de dados (fila + pilha) em um cenário interativo, incluindo **troca simples** e **troca múltipla** entre as estruturas.
 
 ## ✨ Funcionalidades Principais
 
-O programa oferece quatro operações fundamentais:
+| Operação                 | Código | Descrição                                            |
+| ------------------------ | ------ | ---------------------------------------------------- |
+| **Jogar Peça**           | `1`    | Remove a peça do início da fila (_dequeue_)          |
+| **Reservar Peça**        | `2`    | Move a peça da fila para a pilha de reserva (_push_) |
+| **Usar Peça Reservada**  | `3`    | Remove e usa a peça do topo da pilha (_pop_)         |
+| **Trocar Peça Atual**    | `4`    | Troca a peça da frente da fila com o topo da pilha   |
+| **Troca Múltipla (3x3)** | `5`    | Troca as 3 primeiras da fila com as 3 peças da pilha |
+| **Sair**                 | `0`    | Encerra o programa                                   |
 
-| Operação                | Código | Descrição                                            |
-| ----------------------- | ------ | ---------------------------------------------------- |
-| **Jogar Peça**          | `1`    | Remove a peça do início da fila (_dequeue_)          |
-| **Reservar Peça**       | `2`    | Move a peça da fila para a pilha de reserva (_push_) |
-| **Usar Peça Reservada** | `3`    | Remove e usa a peça do topo da pilha (_pop_)         |
-| **Sair**                | `0`    | Encerra o programa                                   |
-
-### 📦 Estrutura das Peças
+## 📦 Estrutura das Peças
 
 Cada peça possui:
 
@@ -80,6 +80,11 @@ typedef struct {
 - `int pop(Pilha *p, Peca *peca)` — Remove peça do topo da pilha
 - `void mostrarPilha(Pilha *p)` — Exibe o estado da pilha
 
+#### Trocas Avançadas
+
+- `int trocarPecaAtual(Fila *f, Pilha *p)` — Troca a frente da fila com o topo da pilha
+- `int trocaMultipla(Fila *f, Pilha *p)` — Troca 3 peças da fila com 3 da pilha preservando a ordem
+
 #### Utilidades
 
 - `Peca gerarPeca(void)` — Gera uma peça aleatória automaticamente
@@ -91,7 +96,7 @@ typedef struct {
 - Reaproveitamento eficiente de espaço no array
 - Operação circular usando `(indice + 1) % MAX_FILA`
 - Mantém sempre 5 peças na fila
-- A cada remoção, uma nova peça é gerada automaticamente
+- A cada remoção da fila, uma nova peça é gerada automaticamente
 
 ### Pilha Linear (LIFO)
 
@@ -99,87 +104,71 @@ typedef struct {
 - Permite reservar peças para uso posterior
 - Acesso apenas pelo topo (última peça inserida)
 
-### Fluxo de Dados
+### Trocas Avançadas
 
-```
-Fila → Jogar (dequeue)      → Peça usada
-Fila → Reservar (dequeue)   → Pilha (push)
-Pilha → Usar (pop)          → Peça usada
-```
+- **Troca simples**: troca a peça da frente da fila com o topo da pilha
+- **Troca múltipla**: troca as 3 primeiras peças da fila com as 3 peças da pilha
+  - A ordem do topo da pilha é preservada ao entrar na fila
+  - A ordem das peças da fila é preservada ao entrar na pilha
 
 ## 🚀 Como Usar
 
 ### Compilação
 
 ```bash
-gcc -g desafioAventureiro.c -o desafioAventureiro.exe
+gcc -g tetris.c -o tetris.exe
 ```
 
 ### Execução
 
 ```bash
-./desafioAventureiro.exe
+./tetris.exe
 ```
 
 ### Exemplo de Uso
 
 ```
-===== TETRIS STACK - GERENCIAMENTO DE PECAS =====
+=== Estado Atual ===
 
-Fila de Pecas: [T 0] [O 1] [L 2] [I 3] [I 4]
-Pilha de Reserva (Topo -> Base): (vazia)
+Fila de Pecas: [I 0] [L 1] [T 2] [O 3] [I 4]
+Pilha de Reserva (Topo -> Base): [O 8] [L 7] [T 6]
 
-1 - Jogar Peca
-2 - Reservar Peca
-3 - Usar Peca Reservada
+Opcoes:
+1 - Jogar peca da frente da fila
+2 - Enviar peca da fila para reserva (pilha)
+3 - Usar peca da reserva (pilha)
+4 - Trocar peca da frente da fila com o topo da pilha
+5 - Trocar os 3 primeiros da fila com as 3 pecas da pilha
 0 - Sair
 
-Opcao: 2
+Opcao: 5
 
-===== RESERVANDO PECA =====
+Acao: troca realizada entre os 3 primeiros da fila e os 3 da pilha.
 
-Peca [T 0] foi movida para a pilha de reserva!
+=== Novo Estado ===
 
-Nova peca gerada automaticamente!
-
-Estado atual:
-Fila de Pecas: [O 1] [L 2] [I 3] [I 4] [T 5]
-Pilha de Reserva (Topo -> Base): [T 0]
-
-Pressione ENTER para continuar...
+Fila de Pecas: [O 8] [L 7] [T 6] [O 3] [I 4]
+Pilha de Reserva (Topo -> Base): [T 2] [L 1] [I 0]
 ```
-
-## 📊 Exemplo de Execução Completa
-
-1. **Estado Inicial**: Fila com 5 peças, pilha vazia
-2. **Reservar** (`2`): Move `[T 0]` da fila para a pilha → Nova peça gerada
-3. **Reservar** (`2`): Move `[O 1]` da fila para a pilha → Nova peça gerada
-4. **Reservar** (`2`): Move `[L 2]` da fila para a pilha → Nova peça gerada
-5. **Pilha cheia**: Tentativa de reservar é bloqueada
-6. **Usar reservada** (`3`): Remove `[L 2]` da pilha e usa
-7. **Jogar** (`1`): Remove e joga peça direto da fila
 
 ## 🎓 Requisitos Cumpridos
 
 ### Funcionais
 
 ✅ Inicialização automática da fila com 5 peças  
-✅ Inicialização da pilha vazia com capacidade para 3 peças  
-✅ Operação de jogar peça (dequeue)  
-✅ Operação de reservar peça (move da fila para pilha)  
-✅ Operação de usar peça reservada (pop)  
-✅ Geração automática de novas peças  
-✅ Validações de fila/pilha cheia ou vazia  
+✅ Inicialização da pilha com capacidade para 3 peças  
+✅ Operações de jogar, reservar e usar peça reservada  
+✅ Troca simples entre fila e pilha  
+✅ Troca múltipla (3x3) entre fila e pilha  
+✅ Geração automática de novas peças após remoções da fila  
 ✅ Exibição clara do estado atual
 
 ### Não Funcionais
 
 ✅ Interface clara e intuitiva  
-✅ Código bem documentado com comentários Doxygen  
-✅ Separação de responsabilidades  
+✅ Código bem documentado  
 ✅ Mensagens de erro descritivas  
-✅ Feedback visual imediato após cada ação  
-✅ Exibição automática do estado atualizado da fila e pilha após operações
+✅ Feedback visual imediato após cada ação
 
 ## 🔧 Detalhes Técnicos
 
@@ -193,15 +182,7 @@ Pressione ENTER para continuar...
 
 - Peças removidas da fila ou pilha não voltam ao jogo
 - A cada remoção da fila, uma nova peça é gerada automaticamente
-- Não é possível reservar quando a pilha está cheia
-- Não é possível usar reservada quando a pilha está vazia
-
-## 📝 Observações
-
-- O programa limpa apenas o buffer de entrada para evitar comportamentos inesperados
-- IDs são sequenciais e únicos durante toda a execução
-- Gerador de números aleatórios é inicializado com o tempo atual
-- Estado da fila e pilha é exibido imediatamente após cada operação bem-sucedida
+- A troca múltipla só ocorre quando há pelo menos 3 peças na fila e na pilha
 
 ## 👨‍💻 Autor
 
@@ -209,5 +190,5 @@ Desenvolvido como parte das atividades de Estrutura de Dados - Tema 3: Pilhas e 
 
 ---
 
-**Status**: ✅ Funcionando perfeitamente  
-**Última atualização**: 02/02/2026
+**Status**: ✅ Funcionando corretamente  
+**Última atualização**: 03/02/2026
